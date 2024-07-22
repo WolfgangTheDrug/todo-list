@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.main{
+  margin: 10px;
+  padding: 0 20px;
+}
+
+mat-card, mat-card-title, mat-card-subtitle, mat-card-content {
+  padding: 10px;
+}
+
+.completed {
+  text-decoration: line-through;
+}

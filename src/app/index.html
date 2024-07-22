@@ -1,0 +1,36 @@
+<div class="main">
+  <mat-card appearance="outlined">
+    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-card-subtitle>Some additional text that will be filled later</mat-card-subtitle>
+    <mat-card-content>
+      <div *ngIf="state === 'default'" class="">
+        <button mat-fab (click)="toggleInputState()"><mat-icon>add</mat-icon></button>
+      </div>
+      <div *ngIf="state === 'addingTask'">
+        <mat-form-field>
+          <mat-label>Add item</mat-label>
+          <input matInput #newItem>
+        </mat-form-field>
+        <button mat-fab (click)="cancelNewItem()"><mat-icon>close</mat-icon></button>
+        <button mat-fab (click)="acceptNewItem(newItem.value)"><mat-icon>check</mat-icon></button>
+      </div>
+    </mat-card-content>
+    <mat-card-content>
+      <mat-tab-group (selectedTabChange)="changeFilter($event)">
+        <mat-tab
+          *ngFor="let filter of filters"
+          [label]="filter | titlecase">
+          <mat-selection-list>
+            <mat-list-option
+              *ngFor="let item of items"
+              togglePosition="before"
+              [(selected)]="item.isCompleted"
+              [ngClass]="item.isCompleted ? 'completed' : 'active'">
+                 {{ item.content }}
+            </mat-list-option>
+          </mat-selection-list>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>
