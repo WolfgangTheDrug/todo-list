@@ -11,8 +11,8 @@
           <mat-label>Add item</mat-label>
           <input matInput #newItem>
         </mat-form-field>
-        <button mat-fab (click)="cancelNewItem()"><mat-icon>close</mat-icon></button>
-        <button mat-fab (click)="acceptNewItem(newItem.value)"><mat-icon>check</mat-icon></button>
+        <button mat-fab color="primary" (click)="acceptNewItem(newItem.value)"><mat-icon>check</mat-icon></button>
+        <button mat-fab color="warn" (click)="cancelNewItem()"><mat-icon>close</mat-icon></button>
       </div>
     </mat-card-content>
     <mat-card-content>
@@ -20,13 +20,15 @@
         <mat-tab
           *ngFor="let filter of filters"
           [label]="filter | titlecase">
-          <mat-selection-list>
+          <mat-selection-list (selectionChange)="toggleCompleted($event.options[0])">
             <mat-list-option
               *ngFor="let item of items"
               togglePosition="before"
+              [value]="item.id"
               [(selected)]="item.isCompleted"
-              [ngClass]="item.isCompleted ? 'completed' : 'active'">
-                 {{ item.content }}
+              [ngClass]="item.isCompleted ? 'completed' : 'active'"
+            >
+              {{ item.content }}
             </mat-list-option>
           </mat-selection-list>
         </mat-tab>

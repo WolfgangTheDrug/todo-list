@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ListItem } from "./list-item";
 import { Task } from "@doist/todoist-api-typescript"
 import { Observable } from "rxjs";
-import {HttpClientModule, HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {MatTabChangeEvent} from "@angular/material/tabs";
-import {MatSelectionListChange} from "@angular/material/list";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { MatTabChangeEvent } from "@angular/material/tabs";
+import {MatListOption, MatSelectionListChange} from "@angular/material/list";
+
 @Component({
   selector: 'app-root',
   templateUrl: './index.html',
@@ -15,11 +16,7 @@ export class AppComponent implements OnInit {
   title: string = 'TODO-list';
   filters: ('all' | 'active' | 'done')[] = ['active', 'done', 'all'];
   filter: 'all' | 'active' | 'done' = 'active'
-  allItems: ListItem[] = [
-    {id: '0', content: 'aaaaa', isCompleted: false},
-    {id: '1', content: 'bbbbb', isCompleted: true},
-    {id: '2', content: 'ccccc', isCompleted: false}
-  ];
+  allItems: ListItem[] = [];
   state: 'default' | 'addingTask' = 'default'
 
   toggleInputState() {
@@ -35,8 +32,18 @@ export class AppComponent implements OnInit {
   }
 
   acceptNewItem(content: string): void {
-    this.sendTask(content)
+    this.sendTask(content).subscribe(
+      task => this.allItems.push(task),
+    )
     this.toggleInputState()
+  }
+
+  toggleCompleted(option: MatListOption): void {
+    if (option.selected) {
+      this.closeTask(option.value).subscribe();
+    } else {
+      this.reopenTask(option.value).subscribe();
+    }
   }
 
   changeFilter(event: MatTabChangeEvent): void {
@@ -44,19 +51,17 @@ export class AppComponent implements OnInit {
   }
 
   get items(): ListItem[] {
-    return this.filter === 'all'
-      ? this.allItems
-      : this.allItems.filter(
-        item => this.filter === 'done' ? item.isCompleted : !item.isCompleted
-      );
+    if(this.filter === 'all') {
+      return this.allItems;
+    }
+    return this.allItems.filter(item => this.filter === 'done' ? item.isCompleted : !item.isCompleted);
   }
 
   constructor(private _http: HttpClient) {}
   apiToken: string = '396001bee5718e9b7b0486d6bb57f6e7700f59dd';
   apiUrl: string = 'https://api.todoist.com/rest/v2/tasks'
   httpHeaders: HttpHeaders = new HttpHeaders({
-    Authorization: `Bearer: ${this.apiToken}`,
-    // Origin: 'http://localhost:4280'
+    Authorization: `Bearer ${this.apiToken}`
   })
   params = new HttpParams({fromObject: { sync_token: '*', resource_types: '["items"]' }})
 
@@ -64,12 +69,28 @@ export class AppComponent implements OnInit {
     return this._http.get<Task[]>(this.apiUrl, {headers: this.httpHeaders, params: this.params})
   }
 
-  sendTask(content: string): void {
-    console.log(content)
-    this._http.post(this.apiUrl, {"content": content}, {headers: this.httpHeaders}).subscribe()
+  sendTask(content: string): Observable<Task> {
+    return this._http.post<Task>(this.apiUrl, {"content": content}, {headers: this.httpHeaders})
+  }
+
+  updateTask(id: string, isCompleted: boolean): Observable<Task> {
+    const taskUrl: string = `${this.apiUrl}/${id}`;
+    return this._http.post<Task>(taskUrl, {"is_completed": isCompleted}, {headers: this.httpHeaders})
+  }
+
+  closeTask(id: string): Observable<Task> {
+    const taskUrl: string = `${this.apiUrl}/${id}/close`;
+    return this._http.post<Task>(taskUrl, {}, {headers: this.httpHeaders})
+  }
+
+  reopenTask(id: string): Observable<Task> {
+    const taskUrl: string = `${this.apiUrl}/${id}/reopen`;
+    return this._http.post<Task>(taskUrl, {}, {headers: this.httpHeaders})
   }
 
   ngOnInit(): void {
-    this.getAllTasks().subscribe(tasks => this.allItems = {...tasks});
+    this.getAllTasks().subscribe(tasks => {
+      this.allItems = tasks
+    });
   }
 }
