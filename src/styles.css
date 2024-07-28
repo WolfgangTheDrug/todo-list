@@ -3,15 +3,44 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+app-root {
+  display: block;
+  height: calc(100vh - 20px);
+  padding: 10px;
+}
+
 .main{
-  margin: 10px;
+  height: 100%;
   padding: 0 20px;
 }
 
-mat-card, mat-card-title, mat-card-subtitle, mat-card-content {
+mat-card {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+mat-card-title, mat-card-subtitle, mat-card-content {
   padding: 10px;
+}
+
+mat-card-content {
+  min-height: 80px;
+}
+
+mat-list-option {
+  display: flex;
+}
+
+.flex-wide-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .completed {
   text-decoration: line-through;
+}
+
+.icon-btn {
+  color: darkgray;
 }

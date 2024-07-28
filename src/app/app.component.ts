@@ -4,7 +4,7 @@ import { Task } from "@doist/todoist-api-typescript"
 import { Observable } from "rxjs";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { MatTabChangeEvent } from "@angular/material/tabs";
-import {MatListOption, MatSelectionListChange} from "@angular/material/list";
+import { MatListOption } from "@angular/material/list";
 
 @Component({
   selector: 'app-root',
@@ -46,6 +46,21 @@ export class AppComponent implements OnInit {
     }
   }
 
+  deleteItem(id: string): void {
+    this.removeTask(id).subscribe();
+    this.allItems.splice(
+      this.allItems.indexOf(
+        this.allItems.find(
+          e => e.id === id
+        )!
+      ), 1
+    )
+  }
+
+  // editItem(id: string): void {
+  //   console.log(id);
+  // }
+
   changeFilter(event: MatTabChangeEvent): void {
     this.filter = this.filters[event.index]
   }
@@ -73,11 +88,6 @@ export class AppComponent implements OnInit {
     return this._http.post<Task>(this.apiUrl, {"content": content}, {headers: this.httpHeaders})
   }
 
-  updateTask(id: string, isCompleted: boolean): Observable<Task> {
-    const taskUrl: string = `${this.apiUrl}/${id}`;
-    return this._http.post<Task>(taskUrl, {"is_completed": isCompleted}, {headers: this.httpHeaders})
-  }
-
   closeTask(id: string): Observable<Task> {
     const taskUrl: string = `${this.apiUrl}/${id}/close`;
     return this._http.post<Task>(taskUrl, {}, {headers: this.httpHeaders})
@@ -86,6 +96,16 @@ export class AppComponent implements OnInit {
   reopenTask(id: string): Observable<Task> {
     const taskUrl: string = `${this.apiUrl}/${id}/reopen`;
     return this._http.post<Task>(taskUrl, {}, {headers: this.httpHeaders})
+  }
+
+  // updateTask(id: string, isCompleted: boolean): Observable<Task> {
+  //   const taskUrl: string = `${this.apiUrl}/${id}`;
+  //   return this._http.post<Task>(taskUrl, {"is_completed": isCompleted}, {headers: this.httpHeaders})
+  // }
+
+  removeTask(id: string): Observable<ArrayBuffer> {
+    const taskUrl: string = `${this.apiUrl}/${id}`;
+    return this._http.delete<ArrayBuffer>(taskUrl, {headers: this.httpHeaders})
   }
 
   ngOnInit(): void {

@@ -28,8 +28,15 @@
               [(selected)]="item.isCompleted"
               [ngClass]="item.isCompleted ? 'completed' : 'active'"
             >
-              {{ item.content }}
+              <div class="flex-wide-container">
+                <span>{{ item.content }}</span>
+                <span  style="align-self: flex-end">
+<!--                  <mat-icon class="icon-btn" click-stop-propagation (click)="editItem(item.id)">edit</mat-icon>-->
+                  <mat-icon class="icon-btn" click-stop-propagation (click)="deleteItem(item.id)">delete</mat-icon>
+                </span>
+              </div>
             </mat-list-option>
+
           </mat-selection-list>
         </mat-tab>
       </mat-tab-group>
