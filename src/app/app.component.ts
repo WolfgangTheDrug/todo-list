@@ -1,25 +1,40 @@
-import { Component, OnInit } from '@angular/core';
-import { ListItem } from "./list-item";
-import { Task } from "@doist/todoist-api-typescript"
-import { Observable } from "rxjs";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { MatTabChangeEvent } from "@angular/material/tabs";
-import { MatListOption } from "@angular/material/list";
+import {Component, OnInit} from '@angular/core';
+import {FilterType, ListItem} from "./list-item";
+import {Task} from "@doist/todoist-api-typescript"
+import {Observable} from "rxjs";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {MatTabChangeEvent} from "@angular/material/tabs";
+import {MatListOption} from "@angular/material/list";
 
 @Component({
   selector: 'app-root',
-  templateUrl: './index.html',
+  templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 
 export class AppComponent implements OnInit {
   title: string = 'TODO-list';
-  filters: ('all' | 'active' | 'done')[] = ['active', 'done', 'all'];
-  filter: 'all' | 'active' | 'done' = 'active'
+  filters: FilterType[] = [FilterType.ALL, FilterType.ACTIVE, FilterType.DONE];
+  filter: FilterType = FilterType.ACTIVE;
   allItems: ListItem[] = [];
   state: 'default' | 'addingTask' = 'default'
 
-  toggleInputState() {
+  apiToken: string = '396001bee5718e9b7b0486d6bb57f6e7700f59dd';
+  apiUrl: string = 'https://api.todoist.com/rest/v2/tasks'
+  httpHeaders: HttpHeaders = new HttpHeaders({
+    Authorization: `Bearer ${this.apiToken}`
+  })
+  params = new HttpParams({fromObject: { sync_token: '*', resource_types: '["items"]' }})
+
+  constructor(private _http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.getAllTasks().subscribe(tasks => {
+      this.allItems = tasks
+    });
+  }
+
+  toggleInputState(): void {
     if (this.state === 'default') {
       this.state = 'addingTask';
     } else {
@@ -57,28 +72,16 @@ export class AppComponent implements OnInit {
     )
   }
 
-  // editItem(id: string): void {
-  //   console.log(id);
-  // }
-
   changeFilter(event: MatTabChangeEvent): void {
     this.filter = this.filters[event.index]
   }
 
   get items(): ListItem[] {
-    if(this.filter === 'all') {
+    if(this.filter === FilterType.ALL) {
       return this.allItems;
     }
-    return this.allItems.filter(item => this.filter === 'done' ? item.isCompleted : !item.isCompleted);
+    return this.allItems.filter(item => this.filter === FilterType.DONE ? item.isCompleted : !item.isCompleted);
   }
-
-  constructor(private _http: HttpClient) {}
-  apiToken: string = '396001bee5718e9b7b0486d6bb57f6e7700f59dd';
-  apiUrl: string = 'https://api.todoist.com/rest/v2/tasks'
-  httpHeaders: HttpHeaders = new HttpHeaders({
-    Authorization: `Bearer ${this.apiToken}`
-  })
-  params = new HttpParams({fromObject: { sync_token: '*', resource_types: '["items"]' }})
 
   getAllTasks(): Observable<Task[]> {
     return this._http.get<Task[]>(this.apiUrl, {headers: this.httpHeaders, params: this.params})
@@ -108,9 +111,5 @@ export class AppComponent implements OnInit {
     return this._http.delete<ArrayBuffer>(taskUrl, {headers: this.httpHeaders})
   }
 
-  ngOnInit(): void {
-    this.getAllTasks().subscribe(tasks => {
-      this.allItems = tasks
-    });
-  }
+
 }

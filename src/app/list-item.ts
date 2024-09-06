@@ -4,3 +4,9 @@ export interface ListItem {
   content: string;
   isCompleted: boolean;
 }
+
+export enum FilterType {
+  ALL = 'all',
+  DONE = 'done',
+  ACTIVE = 'active',
+}
