@@ -1,0 +1,26 @@
+<mat-card-content>
+  <mat-tab-group (selectedTabChange)="changeFilter($event)">
+    <mat-tab
+      *ngFor="let filter of filters"
+      [label]="filter | titlecase">
+      <mat-selection-list (selectionChange)="toggleCompleted($event.options[0])">
+        <mat-list-option
+          *ngFor="let item of items"
+          togglePosition="before"
+          [value]="item.id"
+          [(selected)]="item.isCompleted"
+          [ngClass]="item.isCompleted ? 'completed' : 'active'"
+        >
+          <div class="flex-wide-container">
+            <span>{{ item.content }}</span>
+            <span  style="align-self: flex-end">
+<!--                  <mat-icon class="icon-btn" click-stop-propagation (click)="editItem(item.id)">edit</mat-icon>-->
+                  <mat-icon class="icon-btn" click-stop-propagation (click)="deleteItem(item.id)">delete</mat-icon>
+                </span>
+          </div>
+        </mat-list-option>
+
+      </mat-selection-list>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card-content>

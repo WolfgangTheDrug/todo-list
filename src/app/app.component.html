@@ -1,45 +1,24 @@
 <div class="main">
-  <mat-card appearance="outlined">
+  <mat-toolbar color="primary">
     <mat-card-title>{{ title }}</mat-card-title>
-    <mat-card-subtitle>Some additional text that will be filled later</mat-card-subtitle>
-    <mat-card-content>
-      <div *ngIf="state === 'default'" class="">
-        <button mat-fab (click)="toggleInputState()"><mat-icon>add</mat-icon></button>
-      </div>
-      <div *ngIf="state === 'addingTask'">
-        <mat-form-field>
-          <mat-label>Add item</mat-label>
-          <input matInput #newItem>
-        </mat-form-field>
-        <button mat-fab color="primary" (click)="acceptNewItem(newItem.value)"><mat-icon>check</mat-icon></button>
-        <button mat-fab color="warn" (click)="cancelNewItem()"><mat-icon>close</mat-icon></button>
-      </div>
-    </mat-card-content>
-    <mat-card-content>
-      <mat-tab-group (selectedTabChange)="changeFilter($event)">
-        <mat-tab
-          *ngFor="let filter of filters"
-          [label]="filter | titlecase">
-          <mat-selection-list (selectionChange)="toggleCompleted($event.options[0])">
-            <mat-list-option
-              *ngFor="let item of items"
-              togglePosition="before"
-              [value]="item.id"
-              [(selected)]="item.isCompleted"
-              [ngClass]="item.isCompleted ? 'completed' : 'active'"
-            >
-              <div class="flex-wide-container">
-                <span>{{ item.content }}</span>
-                <span  style="align-self: flex-end">
-<!--                  <mat-icon class="icon-btn" click-stop-propagation (click)="editItem(item.id)">edit</mat-icon>-->
-                  <mat-icon class="icon-btn" click-stop-propagation (click)="deleteItem(item.id)">delete</mat-icon>
-                </span>
-              </div>
-            </mat-list-option>
+    <a mat-button routerLink="/home" routerLinkActive="active">Home</a>
+    <a mat-button routerLink="/new-item" routerLinkActive="active">New item</a>
+  </mat-toolbar>
+  <mat-card appearance="outlined">
+    <router-outlet></router-outlet>
+<!--    <mat-card-content>-->
+<!--      <div *ngIf="state === 'default'" class="">-->
+<!--        <button mat-fab (click)="toggleInputState()"><mat-icon>add</mat-icon></button>-->
+<!--      </div>-->
+<!--      <div *ngIf="state === 'addingTask'">-->
+<!--        <mat-form-field>-->
+<!--          <mat-label>Add item</mat-label>-->
+<!--          <input matInput #newItem>-->
+<!--        </mat-form-field>-->
+<!--        <button mat-fab color="primary" (click)="acceptNewItem(newItem.value)"><mat-icon>check</mat-icon></button>-->
+<!--        <button mat-fab color="warn" (click)="cancelNewItem()"><mat-icon>close</mat-icon></button>-->
+<!--      </div>-->
+<!--    </mat-card-content>-->
 
-          </mat-selection-list>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card-content>
   </mat-card>
 </div>
