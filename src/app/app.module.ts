@@ -19,7 +19,7 @@ import {HomeComponent} from "./home/home.component";
 
 @NgModule({
   declarations: [
-    HomeComponent
+
   ],
   imports: [
     BrowserModule,
@@ -37,6 +37,7 @@ import {HomeComponent} from "./home/home.component";
     FormsModule,
     ClickStopPropagationDirective,
     AppComponent,
+    HomeComponent,
   ],
   providers: [],
   bootstrap: []

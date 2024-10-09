@@ -35,12 +35,13 @@ export const GRI_DATE_FORMATS: MatDateFormats = {
   styleUrls: ['./new-item.component.css'],
   providers: [
     { provide: MAT_DATE_FORMATS, useValue: GRI_DATE_FORMATS },
+    { provide: DateAdapter, useValue: GRI_DATE_FORMATS }
   ]
 })
 
 export class NewItemComponent {
   constructor(private readonly adapter: DateAdapter<Date>) {
-    this.adapter.setLocale("pl-PL")
+    // this.adapter.setLocale("pl")
   }
 
   isMinuteOrDay: boolean = false;

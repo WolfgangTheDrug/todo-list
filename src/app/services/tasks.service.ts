@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Task} from "@doist/todoist-api-typescript";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 
 @Injectable({providedIn: 'root'})
 export class TasksService {
